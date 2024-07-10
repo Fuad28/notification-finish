@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,6 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'app.wsgi.application'
+ASGI_APPLICATION= "app.asgi.application"
 
 
 # Database
@@ -161,3 +164,12 @@ EMAIL_HOST= "smtp4dev"
 EMAIL_HOST_USER=""
 EMAIL_HOST_PASSWORD= ""
 EMAIL_PORT= 25
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}
