@@ -1,8 +1,11 @@
 import { Box, Heading, List, ListItem, Button } from "@chakra-ui/react";
 
+interface DataProp {
+	message: string;
+}
 interface Message {
 	id: number;
-	content: string;
+	data: DataProp;
 }
 
 interface NotificationsProps {
@@ -17,10 +20,11 @@ const Notifications: React.FC<NotificationsProps> = ({ messages, onMarkAsRead })
 			<List spacing={3} mt={4}>
 				{messages.map((message) => (
 					<ListItem key={message.id} display="flex" justifyContent="space-between">
-						{message.content}
+						{message.data.message}
 						<Button
 							size="sm"
 							colorScheme="teal"
+							key={message.id}
 							onClick={() => onMarkAsRead(message.id)}>
 							Mark as Read
 						</Button>

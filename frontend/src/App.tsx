@@ -4,10 +4,14 @@ import { Box, useToast } from "@chakra-ui/react";
 import Navbar from "./components/NavBar";
 import Home from "./components/Home";
 import Notifications from "./components/Notification";
+import token from "./token";
 
+interface Data {
+	message: string;
+}
 interface Message {
 	id: number;
-	content: string;
+	data: Data;
 }
 
 const App = () => {
@@ -17,10 +21,7 @@ const App = () => {
 	const ws = useRef<WebSocket | null>(null);
 
 	useEffect(() => {
-		// Connect to WebSocket server
-		ws.current = new WebSocket(
-			"ws://localhost:8000/ws/notifications/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNjY4NDEwLCJqdGkiOiI3ZDliMDA3MDVlOTk0MzNkYTk2ZGUwODdkYTcyODM1YSIsInVzZXJfaWQiOjJ9.EL4NeYFeBHGaqTKqT7WffbBw5YBquswPx68gMfBn960"
-		);
+		ws.current = new WebSocket(`ws://localhost:8000/ws/notifications/?token=${token}`);
 
 		ws.current.onopen = () => {
 			console.log("Connected to WebSocket server");
@@ -28,9 +29,21 @@ const App = () => {
 
 		ws.current.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-			if (data.type === "allMessages") {
-				setMessages(data.messages);
-				setNotificationCount(data.messages.length);
+			if (data.type === "all_messages") {
+				setMessages(data.data.notifications);
+				setNotificationCount(data.data.count);
+			}
+
+			if (data.type === "new_message") {
+				setMessages([...messages, data.data]);
+				setNotificationCount(data.data.count + 1);
+				toast({
+					title: "New Notification",
+					description: data.data.data.message,
+					status: "info",
+					duration: 5000,
+					isClosable: true,
+				});
 			}
 		};
 
@@ -43,22 +56,9 @@ const App = () => {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (messages.length > 0) {
-			const latestMessage = messages[messages.length - 1];
-			toast({
-				title: "New Notification",
-				description: latestMessage.content,
-				status: "info",
-				duration: 5000,
-				isClosable: true,
-			});
-		}
-	}, [messages, toast]);
-
 	const handleMarkAsRead = (id: number) => {
 		if (ws.current) {
-			ws.current.send(JSON.stringify({ type: "markAsRead", id }));
+			ws.current.send(JSON.stringify({ type: "notification.read", id }));
 			setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== id));
 			setNotificationCount((prevCount) => prevCount - 1);
 		}

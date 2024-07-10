@@ -30,7 +30,8 @@ const Navbar = ({ notificationCount }: NavbarProps) => {
 										top="-1"
 										right="-1"
 										rounded="full"
-										colorScheme="red">
+										textColor="red"
+										colorScheme="wine">
 										{notificationCount}
 									</Badge>
 								)}

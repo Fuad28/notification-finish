@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Heading, Button, Text, HStack, Image } from "@chakra-ui/react";
 import homeImage from "../assets/home.jpeg";
+import token from "../token";
 
 const Home = () => {
 	const [countdown, setCountdown] = useState(0);
@@ -13,13 +14,11 @@ const Home = () => {
 	}, [countdown]);
 
 	const handleClick = async () => {
-		// Simulate an API request
-		await fetch("http://localhost:8000/trigger/", {
+		await fetch("http://localhost:8000/api/trigger/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization:
-					"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNjY4NDEwLCJqdGkiOiI3ZDliMDA3MDVlOTk0MzNkYTk2ZGUwODdkYTcyODM1YSIsInVzZXJfaWQiOjJ9.EL4NeYFeBHGaqTKqT7WffbBw5YBquswPx68gMfBn960",
+				Authorization: `Bearer ${token}`,
 			},
 		});
 
