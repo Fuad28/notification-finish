@@ -14,12 +14,12 @@ const Home = () => {
 
 	const handleClick = async () => {
 		// Simulate an API request
-		await fetch("https://jsonplaceholder.typicode.com/posts", {
-			// "https://localhost:8000/trigger"
+		await fetch("http://localhost:8000/trigger/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: "...",
+				Authorization:
+					"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNjY4NDEwLCJqdGkiOiI3ZDliMDA3MDVlOTk0MzNkYTk2ZGUwODdkYTcyODM1YSIsInVzZXJfaWQiOjJ9.EL4NeYFeBHGaqTKqT7WffbBw5YBquswPx68gMfBn960",
 			},
 		});
 

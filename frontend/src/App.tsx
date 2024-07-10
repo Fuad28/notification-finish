@@ -18,7 +18,9 @@ const App = () => {
 
 	useEffect(() => {
 		// Connect to WebSocket server
-		ws.current = new WebSocket("ws://localhost:8000?token=...");
+		ws.current = new WebSocket(
+			"ws://localhost:8000/ws/notifications/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzIwNjY4NDEwLCJqdGkiOiI3ZDliMDA3MDVlOTk0MzNkYTk2ZGUwODdkYTcyODM1YSIsInVzZXJfaWQiOjJ9.EL4NeYFeBHGaqTKqT7WffbBw5YBquswPx68gMfBn960"
+		);
 
 		ws.current.onopen = () => {
 			console.log("Connected to WebSocket server");
