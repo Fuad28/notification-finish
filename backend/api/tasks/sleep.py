@@ -5,7 +5,7 @@ from api.enums import NotificationTypeEnum
 from api.models import Notification
 
 def long_running_task(user_id):
-    time.sleep(1)
+    time.sleep(5)
 
     print("Long running task completed.")
 

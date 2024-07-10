@@ -16,8 +16,7 @@ class JWTAuthMiddleware(BaseMiddleware):
             scope["user"] = await self.authenticate(scope)
             return await super().__call__(scope, receive, send)
 
-        except Exception as e:
-            raise e
+        except Exception:
             return await send({
                 "type": "websocket.close",
                 "close": True,

@@ -6,7 +6,11 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from api.models import Notification
-from api.serializers.notification import (CreditNotificationSerializer, DebitNotificationSerializer)
+from api.serializers.notification import (
+	CreditNotificationSerializer, 
+	DebitNotificationSerializer, 
+	NotificationSerializer
+)
 
 SERIALIZERS= {
 		"credit": CreditNotificationSerializer,
@@ -38,11 +42,14 @@ class NotificationHandler:
 
 
 	def send_in_app(self, notification: Notification):
-		data, _= self._validate_data(notification)
+		data= NotificationSerializer(instance= notification).data
 		group_name= f"{notification.user.pk}_notifications"
 		async_to_sync(get_channel_layer().group_send)(
 			group_name, 
-			{"type": "send.message", "message": data["message"]})
+			{
+				"type": "send.message", 
+				"data": {"type": "new_message", "data": data}
+			})
 
 
 	def send_notification(self, notification: Notification):

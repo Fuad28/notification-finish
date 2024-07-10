@@ -29,6 +29,7 @@ def mark_notification_read(user_id, notification_id):
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
+
     async def connect(self):
         
         await self.accept()
@@ -38,24 +39,41 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         notifications= await get_unread_notifications(self.user_id)
         data= {
-            "status": "user.connected",
-            "unread_notifications": notifications
+            "type": "all_messages",
+            "data": {
+                "count": notifications["count"],
+                "notifications": notifications["notifications"]
+            }
         }
 
         return await self.channel_layer.group_send(
             self.group_name, 
-            {"type": "send.message", "message": data}
+            {"type": "send.message", "data": data}
         )
 
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
-    
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        event_type= data.get("type")
+
+        if event_type == "notification.read":
+             return await self.notification_read(data.get("id"))
+        
+        return await self.send_error_message()
+
+           
+        
+
+    async def send_error_message(self):
+        return await self.send(text_data= json.dumps({"type": "error", "data": {"message": "invalid payload"}}))
+
     async def send_message(self, event):
-        return await self.send(text_data= json.dumps({"message": event["message"]}))
+        return await self.send(text_data= json.dumps(event["data"]))
     
-    async def notification_read(self, event):
-        mark_notification_read(self.user_id, event["id"])
+    async def notification_read(self, id):
+        return await mark_notification_read(self.user_id, id)
 
 
