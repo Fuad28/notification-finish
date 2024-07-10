@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+    backend:
+        build: ./backend
+        command: ./docker-entrypoint.sh
+        ports:
+            - 8000:8000
+        restart: always
+        volumes:
+            - ./backend:/app
+
+    smtp4dev:
+        image: rnwood/smtp4dev:v3
+        ports:
+            - 8001:80
+            - 25:25
+        restart: always
+
+    frontend:
+        depends_on:
+            - backend
+        build: ./frontend
+        ports:
+            - 5173:5173
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
