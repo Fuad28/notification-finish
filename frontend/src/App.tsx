@@ -35,8 +35,8 @@ const App = () => {
 			}
 
 			if (data.type === "new_message") {
-				setMessages([...messages, data.data]);
-				setNotificationCount(data.data.count + 1);
+				setMessages((prevMessages) => [...prevMessages, data.data]);
+				setNotificationCount((prevCount) => prevCount + 1);
 				toast({
 					title: "New Notification",
 					description: data.data.data.message,
